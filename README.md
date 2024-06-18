@@ -1,2 +1,0 @@
-# Python_AI_machine_learning
-Python_AI_machine_learning
