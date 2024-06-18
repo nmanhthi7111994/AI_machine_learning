@@ -1,0 +1,11 @@
+2024-06-16 15:18:20 INFO Starting test suite tests.test_ema
+ERROR: test_ema (unittest.loader._FailedTest.test_ema)
+ImportError: Failed to import test module: test_ema
+Traceback (most recent call last):
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python311\Lib\unittest\loader.py", line 162, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'tests.test_ema'
+
+
+2024-06-16 15:18:20 INFO Test suite tests.test_ema finished

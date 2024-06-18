@@ -1,0 +1,11 @@
+2024-06-16 14:43:37 INFO Starting test suite --f=c:\Users\Admin\AppData\Roaming\jupyter\runtime\kernel-v2-3508uO2FOzgF40cJ.json
+ERROR: --f=c:\Users\Admin\AppData\Roaming\jupyter\runtime\kernel-v2-3508uO2FOzgF40cJ (unittest.loader._FailedTest.--f=c:\Users\Admin\AppData\Roaming\jupyter\runtime\kernel-v2-3508uO2FOzgF40cJ)
+ImportError: Failed to import test module: --f=c:\Users\Admin\AppData\Roaming\jupyter\runtime\kernel-v2-3508uO2FOzgF40cJ
+Traceback (most recent call last):
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python311\Lib\unittest\loader.py", line 162, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named '--f=c:\\Users\\Admin\\AppData\\Roaming\\jupyter\\runtime\\kernel-v2-3508uO2FOzgF40cJ'
+
+
+2024-06-16 14:43:37 INFO Test suite --f=c:\Users\Admin\AppData\Roaming\jupyter\runtime\kernel-v2-3508uO2FOzgF40cJ.json finished
