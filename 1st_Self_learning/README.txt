@@ -1,1 +1,2 @@
 - Linear -> Logistic -> Neural Networks 
+
