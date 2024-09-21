@@ -1,3 +1,4 @@
+from numpy.lib import utils
 from ultralytics import YOLO
 import supervision as sv
 import pickle
@@ -6,6 +7,8 @@ import numpy as np
 import pandas as pd
 import cv2
 import sys 
+sys.path.append('../')
+from utils import get_center_of_bbox, get_bbox_width
 
 class Tracker:
   def __init__(self,model_path):
@@ -25,6 +28,26 @@ class Tracker:
             detections += detections_batch
         return detections
 
+  def draw_ellipse(self,frame,bbox,color,track_id=None):
+        y2 = int(bbox[3])
+        x_center, _ = get_center_of_bbox(bbox)
+        width = get_bbox_width(bbox)
+
+        cv2.ellipse(
+            frame,
+            center=(x_center,y2),
+            axes=(int(width), int(0.35*width)),
+            angle=0.0,
+            startAngle=-45,
+            endAngle=235,
+            color = color,
+            thickness=2,
+            lineType=cv2.LINE_4
+        )
+
+        return frame
+
+
 #The get_object_tracks method processes a sequence of video frames, detects objects within them, and then converts these detections into a format compatible with the supervision library.
 #The method loops through each frame's detections, inverts the class name dictionary for easier lookups, and then converts and prints the detection results.
 #The method is likely intended to be part of a larger object tracking system, where the detections could be used to track objects across frames.
@@ -42,7 +65,7 @@ class Tracker:
             "referees":[],
             "ball":[]
         }
-        
+
     for frame_num, detection in enumerate(detections):
         # Access the class names through the 'names' attribute
         cls_names = detection.names  # 'names' is a dictionary mapping class IDs to class names
@@ -58,7 +81,7 @@ class Tracker:
 
         #Track the object
         destionation_with_tracks = self.tracker.update_with_detections(detection_supervision)
-
+        print(destionation_with_tracks)
 
         #This part initializes empty dictionaries in tracks for storing the tracked bounding boxes (bbox) of players, referees, and the ball for each frame.
         # These dictionaries are stored as lists, where each list entry corresponds to a specific frame.
@@ -98,3 +121,22 @@ class Tracker:
                 pickle.dump(tracks,f)      
 
     return tracks
+
+  def draw_annotations(self,video_frames, tracks):
+    output_video_frames= []
+    for frame_num, frame in enumerate(video_frames):
+        frame = frame.copy()
+
+        player_dict = tracks["players"][frame_num]
+        ball_dict = tracks["ball"][frame_num]
+        referee_dict = tracks["referees"][frame_num]
+
+        # Draw Players
+        for track_id, player in player_dict.items():
+            #color = player.get("team_color",(0,0,255))
+            frame = self.draw_ellipse(frame, player["bbox"],(0,0,255), track_id)
+
+        output_video_frames.append(frame)
+
+    return output_video_frames
+    

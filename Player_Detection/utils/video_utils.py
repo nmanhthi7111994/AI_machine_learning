@@ -10,9 +10,15 @@ def read_video(video_path):
         frames.append(frame)
     return frames
 
-def save_video(ouput_video_frames,output_video_path):
+def save_video(output_video_frames, output_video_path):
+    if not output_video_frames or output_video_frames[0] is None:  # Check if the list is empty or first frame is None
+        print("No frames to save or first frame is None.")
+        return
+
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter(output_video_path, fourcc, 24, (ouput_video_frames[0].shape[1], ouput_video_frames[0].shape[0]))
-    for frame in ouput_video_frames:
-        out.write(frame)
+    out = cv2.VideoWriter(output_video_path, fourcc, 24, (output_video_frames[0].shape[1], output_video_frames[0].shape[0]))
+    for frame in output_video_frames:
+        if frame is not None:  # Ensure the frame is not None
+            out.write(frame)
     out.release()
+

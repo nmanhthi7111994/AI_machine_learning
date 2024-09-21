@@ -9,10 +9,14 @@ def main():
     tracker = Tracker('/content/AI_machine_learning/Player_Detection/models/2nd_approach/model_1.pt')
     tracks = tracker.get_object_tracks(video_frames,
                                        read_from_stub=True,
-                                       stub_path='stubs/track_stubs.pkl')
+                                       stub_path='/content/AI_machine_learning/Player_Detection/stubs/track_stubs_2.pkl')
 
+    #Draw output
+    ## Draw object Tracks
+    output_video_frames = tracker.draw_annotations(video_frames,tracks)
+    
     # Save video
-    save_video(video_frames, '/content/output/output_1.avi')
+    save_video(output_video_frames, '/content/output_1.avi')
 
    
 
