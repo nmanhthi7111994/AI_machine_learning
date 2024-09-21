@@ -35,10 +35,10 @@ class Tracker:
 
         # Convert to supervision format
         detection_supervision = sv.Detections.from_ultralytics(detection)  
-        
+
         # Convert GoalKeeper to player object
-            for object_ind , class_id in enumerate(detection_supervision.class_id):
-                if cls_names[class_id] == "goalkeeper":
-                    detection_supervision.class_id[object_ind] = cls_names_inv["player"]
+        for object_ind , class_id in enumerate(detection_supervision.class_id):
+            if cls_names[class_id] == "goalkeeper":
+                detection_supervision.class_id[object_ind] = cls_names_inv["player"]
 
         print(detection_supervision)
