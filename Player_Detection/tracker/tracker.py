@@ -1,5 +1,11 @@
-import supervision as sv
 from ultralytics import YOLO
+import supervision as sv
+import pickle
+import os
+import numpy as np
+import pandas as pd
+import cv2
+import sys 
 
 class Tracker:
   def __init__(self,model_path):
@@ -24,9 +30,14 @@ class Tracker:
 #The method loops through each frame's detections, inverts the class name dictionary for easier lookups, and then converts and prints the detection results.
 #The method is likely intended to be part of a larger object tracking system, where the detections could be used to track objects across frames.
 
-  def get_object_tracks(self, frames):
-    # Get detections for all frames
-    detections = self.detect_frames(frames)
+  def get_object_tracks(self, frames, read_from_stub=False, stub_path=None):
+        
+    if read_from_stub and stub_path is not None and os.path.exists(stub_path):
+        with open(stub_path,'rb') as f:
+            tracks = pickle.load(f)
+        return tracks
+
+    
     
     for frame_num, detection in enumerate(detections):
         # Access the class names through the 'names' attribute
@@ -41,4 +52,45 @@ class Tracker:
             if cls_names[class_id] == "goalkeeper":
                 detection_supervision.class_id[object_ind] = cls_names_inv["player"]
 
-        print(detection_supervision)
+        #Track the object
+        destionation_with_tracks = self.tracker.update_with_detections(detection_supervision)
+
+
+        #This part initializes empty dictionaries in tracks for storing the tracked bounding boxes (bbox) of players, referees, and the ball for each frame.
+        # These dictionaries are stored as lists, where each list entry corresponds to a specific frame.
+
+        tracks["players"].append({})
+        tracks["referees"].append({})
+        tracks["ball"].append({})
+
+        # If the detection is classified as a player or referee, 
+        # the bounding box is stored in the appropriate dictionary (players or referees) under the corresponding track_id.
+        # This way, you can keep track of where each player or referee is located across frames.
+        # Bounding boxes for players, referees, and the ball are stored in dictionaries that track their locations across frames.
+
+        for frame_detection in destionation_with_tracks
+            bbox = frame_detection[0].tolist()
+            cls_id = frame_detection[3]
+            track_id = frame_detection[4]
+
+            if cls_id == cls_names_inv['player']:
+                tracks["players"][frame_num][track_id] = {"bbox":bbox}
+            
+            if cls_id == cls_names_inv['referee']:
+                    tracks["referees"][frame_num][track_id] = {"bbox":bbox}
+
+        for frame_detection in detection_supervision:
+            bbox = frame_detection[0].tolist()
+            cls_id = frame_detection[3]
+
+            if cls_id == cls_names_inv['ball']:
+                tracks["ball"][frame_num][1] = {"bbox":bbox}
+
+    #Subsequent Runs: If the same frames need to be processed again, and read_from_stub=True, 
+    # the method can skip the tracking process and load the tracks data from the stub file, providing an immediate result.           
+
+    if stub_path is not None:
+            with open(stub_path,'wb') as f:
+                pickle.dump(tracks,f)      
+
+    return tracks
