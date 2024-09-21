@@ -23,7 +23,6 @@ class Tracker:
         for i in range(0,len(frames),batch_size):
             detections_batch = self.model.predict(frames[i:i+batch_size],conf=0.1)
             detections += detections_batch
-            break
         return detections
 
 #The get_object_tracks method processes a sequence of video frames, detects objects within them, and then converts these detections into a format compatible with the supervision library.
@@ -37,8 +36,13 @@ class Tracker:
             tracks = pickle.load(f)
         return tracks
 
-    
-    
+    detections = self.detect_frames(frames) 
+    tracks={
+            "players":[],
+            "referees":[],
+            "ball":[]
+        }
+        
     for frame_num, detection in enumerate(detections):
         # Access the class names through the 'names' attribute
         cls_names = detection.names  # 'names' is a dictionary mapping class IDs to class names
@@ -68,7 +72,7 @@ class Tracker:
         # This way, you can keep track of where each player or referee is located across frames.
         # Bounding boxes for players, referees, and the ball are stored in dictionaries that track their locations across frames.
 
-        for frame_detection in destionation_with_tracks
+        for frame_detection in destionation_with_tracks:
             bbox = frame_detection[0].tolist()
             cls_id = frame_detection[3]
             track_id = frame_detection[4]
