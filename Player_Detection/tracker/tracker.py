@@ -45,6 +45,38 @@ class Tracker:
             lineType=cv2.LINE_4
         )
 
+        #Continue to mark the id for the collected object of the 
+        rectangle_width = 40
+        rectangle_heigh= 20
+        x1_rect = x_center - rectangle_width//2
+        x2_rect = x_center + rectangle_width//2
+        y1_rect = (y2 - rectangle_heigh//2) + 15
+        y2_rect = (y2 + rectangle_heigh//2) + 15
+
+        if track_id is not None:
+              cv2.rectangle(frame,
+                            (int(x1_rect),int(y1_rect)),
+                            (int(x2_rect),int(y2_rect)),
+                            color,
+                            cv2.FILLED
+                )
+              #This aim to designer for the number more than 99             
+              x1_text=x1_rect+12
+              if track_id > 99: 
+                  x1_text -=10
+              
+              #Put the track id into frame objec go along with design pattern 
+              cv2.putText(
+                frame,
+                f"{track_id}",
+                (int(x1_text),int(y1_rect+15)),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0,0,0),
+                2
+              )
+
+
         return frame
 
 
@@ -122,19 +154,51 @@ class Tracker:
 
     return tracks
 
+  #Draw a triangle to get the dimension (horizon and veritical )for tracking the ball moving/progressing
+  # The dimension we used here is the 2-dimensions X and Y
+  # This corrected code will properly draw a triangle on the frame at the bounding box's location.
+  def draw_triangle(self,frame, bbox, color):
+      y= int(bbox[1])#This line extracts the vertical position (y-coordinate) from the bbox.
+      x,_ = get_center_of_bbox(bbox) #. The _ suggests that the function returns two values, and we are only interested in the x-coordinate.
+      #Provide triangle with specific information
+      triangle_points = np.array([
+          [x,y],
+          [x-10,y-20],
+          [x+10,y-20],
+      ])
+
+      #This line draws the triangle again, but with a black border (color (0, 0, 0)) of thickness 2 pixels.
+      # This creates an outline around the filled triangle for better visibility.
+      cv2.drawContours(frame, [triangle_points],0,color, cv2.FILLED)
+      cv2.drawContours(frame, [triangle_points],0,(0,0,0), 2)
+
+      
+      return frame
+
   def draw_annotations(self,video_frames, tracks):
     output_video_frames= []
     for frame_num, frame in enumerate(video_frames):
         frame = frame.copy()
 
-        player_dict = tracks["players"][frame_num]
-        ball_dict = tracks["ball"][frame_num]
-        referee_dict = tracks["referees"][frame_num]
+        player_dict = tracks["players"][frame_num] if frame_num < len(tracks["players"]) else {}
+        ball_dict = tracks["ball"][frame_num] if frame_num < len(tracks["ball"]) else {}
+        referee_dict = tracks["referees"][frame_num] if frame_num < len(tracks["referees"]) else {}
 
         # Draw Players
         for track_id, player in player_dict.items():
             #color = player.get("team_color",(0,0,255))
             frame = self.draw_ellipse(frame, player["bbox"],(0,0,255), track_id)
+
+        #Draw Referee
+        for _,referee in referee_dict.items():
+          frame = self.draw_ellipse(frame,referee["bbox"],(0,255,255))
+
+        
+        #Draw a ball
+        for track_id,ball in ball_dict.items():
+          frame = self.draw_triangle(frame,ball["bbox"],(0,255,0))
+
+        
 
         output_video_frames.append(frame)
 
