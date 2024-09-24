@@ -1,5 +1,6 @@
 from utils import read_video, save_video
 from tracker import Tracker
+import cv2
 
 def main():
     # Read the video
@@ -12,6 +13,16 @@ def main():
                                        stub_path='/content/AI_machine_learning/Player_Detection/stubs/track_stubs_3.pkl')
 
     #Save cropped image of a player
+    for track_id, player in tracks['players'][0].items():
+      bbox = player['bbox']
+      frame = video_frames[0]
+
+      #crop bbox from the frame
+      cropped_image = frame[int(bbox[1]):int(bbox[3]),int(bbox[0]):int(bbox[2])]
+
+      #Save the cropped image
+      cv2.imwrite(f'/content/cropped_img.jpg', cropped_image)
+      break
                
 
     #Draw output
