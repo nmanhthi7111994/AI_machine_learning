@@ -11,6 +11,9 @@ def main():
                                        read_from_stub=True,
                                        stub_path='/content/AI_machine_learning/Player_Detection/stubs/track_stubs_3.pkl')
 
+    #Save cropped image of a player
+               
+
     #Draw output
     ## Draw object Tracks
     output_video_frames = tracker.draw_annotations(video_frames,tracks)
