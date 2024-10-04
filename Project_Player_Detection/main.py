@@ -8,10 +8,10 @@ def main():
     video_frames = read_video('/content/Juve_2.mp4')
 
     #Intializer Tracker
-    tracker = Tracker('/content/AI_machine_learning/Player_Detection/models/2nd_approach/3th_player_detection_best.pt.pt')
+    tracker = Tracker('/content/AI_machine_learning/Project_Player_Detection/models/2nd_approach/3th_player_detection_best.pt.pt')
     tracks = tracker.get_object_tracks(video_frames,
                                        read_from_stub=True,
-                                       stub_path='/content/AI_machine_learning/Player_Detection/stubs/track_stubs_3.pkl')
+                                       stub_path='/content/AI_machine_learning/Project_Player_Detection/stubs/track_stubs_4.pkl')
 
     # Interpolate Ball Positions
     tracks["ball"] = tracker.interpolate_ball_positions(tracks["ball"])
@@ -47,7 +47,7 @@ def main():
     output_video_frames = tracker.draw_annotations(video_frames,tracks)
     
     # Save video
-    save_video(output_video_frames, '/content/output_2.avi')
+    save_video(output_video_frames, '/content/output_detection.avi')
 
    
 
