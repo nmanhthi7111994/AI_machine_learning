@@ -33,8 +33,11 @@ class Tracker:
         df_ball_positions = pd.DataFrame(ball_positions,columns=['x1','y1','x2','y2'])
 
         # Interpolate missing values
-        df_ball_positions = df_ball_positions.interpolate()
-        df_ball_positions = df_ball_positions.bfill()
+        #df_ball_positions = df_ball_positions.interpolate()
+        #df_ball_positions = df_ball_positions.bfill()
+        # Forward fill missing values using the previous non-missing value
+        df_ball_positions = df_ball_positions.ffill()
+
 
         ball_positions = [{1: {"bbox":x}} for x in df_ball_positions.to_numpy().tolist()]
 
