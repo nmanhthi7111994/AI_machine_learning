@@ -14,7 +14,7 @@ def main():
 
 
     #Intializer Tracker
-    tracker = Tracker(r'C:\Users\Admin\Documents\Github\AI_machine_learning\Project_Player_Detection\models\2nd_approach\3th_player_detection_best.pt')
+    tracker = Tracker(r'C:\Users\Admin\Documents\Github\AI_machine_learning\Project_Player_Detection\models\2nd_approach\8th_training_result.pt')
     tracks = tracker.get_object_tracks(video_frames,
                                        read_from_stub=True,
                                        stub_path=r'C:\Users\Admin\Documents\Github\AI_machine_learning\Project_Player_Detection\stubs\track_stubs_5.pkl')
